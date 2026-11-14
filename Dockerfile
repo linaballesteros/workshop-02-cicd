@@ -5,14 +5,14 @@ FROM python:3.13-slim
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copia solo el archivo de requerimientos primero para aprovechar el cache de Docker
-COPY requirements.txt .
+# Copia el lockfile con versiones y hashes fijados para una build reproducible
+COPY requirements.lock.txt .
 
 # Instala solo las dependencias de ejecución (Flask y Gunicorn)
-# Usa --no-cache-dir para reducir el tamaño de la imagen
-# Usa --only-binary :all: para instalar solo wheels y evitar ejecutar
-# scripts de setup durante la instalación de dependencias
-RUN pip install --no-cache-dir --only-binary :all: -r requirements.txt
+# --no-cache-dir reduce el tamaño de la imagen
+# --only-binary :all: instala solo wheels y evita ejecutar scripts de setup
+# --require-hashes fija versiones resueltas y verifica la integridad por hash
+RUN pip install --no-cache-dir --only-binary :all: --require-hashes -r requirements.lock.txt
 
 # Copia el código de la aplicación (solo la carpeta app)
 COPY app/ ./app/
