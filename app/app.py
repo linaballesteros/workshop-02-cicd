@@ -4,19 +4,11 @@ Expone una única ruta que muestra un formulario (GET) y calcula el
 resultado de la operación seleccionada (POST).
 """
 
-import os
-
 from flask import Flask, render_template, request
-from flask_wtf.csrf import CSRFProtect
 
 from .calculadora import sumar, restar, multiplicar, dividir
 
 app = Flask(__name__)
-# Clave para firmar el token CSRF. En producción se define por variable de
-# entorno; en desarrollo se genera una aleatoria por proceso.
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", os.urandom(32).hex())
-# Habilita la protección CSRF en todos los formularios POST.
-csrf = CSRFProtect(app)
 
 
 @app.route("/", methods=["GET", "POST"])
